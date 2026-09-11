@@ -1,0 +1,590 @@
+<?xml version="1.0"?>
+<!--
+  tonypi.urdf - Hiwonder TonyPi AI Humanoid Robot
+  Calibrated kinematic model with accurate joint axes and mesh alignments for ROS 2 Jazzy.
+  
+  Actuators: 18 DOF (16 serial-bus + 2 PWM head)
+    Head:
+      - neck_yaw   (Z axis, pan)
+      - head_pitch (Y axis, tilt)
+    Left Arm:
+      - l_shoulder_pitch (Y axis)
+      - l_upperarm_roll  (X axis, upward/downward abduction)
+      - l_elbow          (X axis, parallel to upperarm roll)
+    Right Arm:
+      - r_shoulder_pitch (Y axis)
+      - r_upperarm_roll  (X axis, upward/downward abduction)
+      - r_elbow          (X axis, parallel to upperarm roll)
+    Left Leg:
+      - l_hip_roll    (X axis)
+      - l_hip_pitch   (Y axis)
+      - l_knee        (Y axis)
+      - l_ankle_pitch (Y axis)
+      - l_ankle_roll  (X axis)
+    Right Leg:
+      - r_hip_roll    (X axis)
+      - r_hip_pitch   (Y axis)
+      - r_knee        (Y axis)
+      - r_ankle_pitch (Y axis)
+      - r_ankle_roll  (X axis)
+-->
+<robot name="tonypi">
+
+  <!-- ============================ Materials ============================ -->
+  <material name="shell">
+    <color rgba="0.93 0.93 0.95 1.0"/>
+  </material>
+  <material name="joint">
+    <color rgba="0.15 0.16 0.18 1.0"/>
+  </material>
+  <material name="accent">
+    <color rgba="0.20 0.55 0.95 1.0"/>
+  </material>
+
+  <!-- ============================ Base / Pelvis ============================ -->
+  <link name="base_link"/>
+
+  <joint name="base_to_pelvis" type="fixed">
+    <parent link="base_link"/>
+    <child link="pelvis"/>
+    <origin xyz="0 0 0.267" rpy="0 0 0"/>
+  </joint>
+
+  <link name="pelvis">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/pelvis.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/pelvis.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.60"/>
+      <inertia ixx="8e-4" iyy="8e-4" izz="6e-4" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <!-- Torso dummy link (co-located with trunk center for ROS humanoid conventions) -->
+  <link name="torso"/>
+  <joint name="spine_fixed" type="fixed">
+    <parent link="pelvis"/>
+    <child link="torso"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ============================ Head & Neck ============================ -->
+  <link name="neck">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/neck.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="joint"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/neck.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.03"/>
+      <inertia ixx="5e-6" iyy="5e-6" izz="5e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="neck_yaw" type="revolute">
+    <parent link="pelvis"/>
+    <child link="neck"/>
+    <origin xyz="0.0 0.0 0.050" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.571" upper="1.571" effort="1.0" velocity="3.0"/>
+  </joint>
+
+  <link name="head">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/head.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/head.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.15"/>
+      <inertia ixx="1.5e-4" iyy="1.5e-4" izz="1.5e-4" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="head_pitch" type="revolute">
+    <parent link="neck"/>
+    <child link="head"/>
+    <origin xyz="0.015 0.0 0.015" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.0" upper="1.0" effort="1.0" velocity="3.0"/>
+  </joint>
+
+  <!-- ============================ Left Arm ============================ -->
+  <link name="l_shoulder">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_shoulder.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="joint"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_shoulder.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="8e-6" iyy="8e-6" izz="8e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_shoulder_pitch" type="revolute">
+    <parent link="pelvis"/>
+    <child link="l_shoulder"/>
+    <origin xyz="0.0 0.058 0.0287" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.094" upper="2.094" effort="1.5" velocity="4.0"/>
+  </joint>
+
+  <link name="l_upper_arm">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_upper_arm.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_upper_arm.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="3e-5" iyy="1e-5" izz="3e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_upperarm_roll" type="revolute">
+    <parent link="l_shoulder"/>
+    <child link="l_upper_arm"/>
+    <origin xyz="0.0 0.0244 0.0" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-2.094" upper="2.094" effort="1.5" velocity="4.0"/>
+  </joint>
+
+  <link name="l_forearm">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_forearm.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="accent"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_forearm.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.06"/>
+      <inertia ixx="2e-5" iyy="8e-6" izz="2e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_elbow" type="revolute">
+    <parent link="l_upper_arm"/>
+    <child link="l_forearm"/>
+    <origin xyz="0.0 0.0 -0.0489" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-2.094" upper="2.094" effort="1.2" velocity="4.0"/>
+  </joint>
+
+  <!-- ============================ Right Arm ============================ -->
+  <link name="r_shoulder">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_shoulder.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="joint"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_shoulder.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="8e-6" iyy="8e-6" izz="8e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_shoulder_pitch" type="revolute">
+    <parent link="pelvis"/>
+    <child link="r_shoulder"/>
+    <origin xyz="0.0 -0.058 0.0287" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.094" upper="2.094" effort="1.5" velocity="4.0"/>
+  </joint>
+
+  <link name="r_upper_arm">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_upper_arm.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_upper_arm.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="3e-5" iyy="1e-5" izz="3e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_upperarm_roll" type="revolute">
+    <parent link="r_shoulder"/>
+    <child link="r_upper_arm"/>
+    <origin xyz="0.0 -0.0244 0.0" rpy="0 0 0"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="-2.094" upper="2.094" effort="1.5" velocity="4.0"/>
+  </joint>
+
+  <link name="r_forearm">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_forearm.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="accent"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_forearm.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.06"/>
+      <inertia ixx="2e-5" iyy="8e-6" izz="2e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_elbow" type="revolute">
+    <parent link="r_upper_arm"/>
+    <child link="r_forearm"/>
+    <origin xyz="0.0 0.0 -0.0489" rpy="0 0 0"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="-2.094" upper="2.094" effort="1.2" velocity="4.0"/>
+  </joint>
+
+  <!-- ============================ Left Leg ============================ -->
+  <link name="l_hip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_hip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="joint"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_hip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_hip_roll" type="revolute">
+    <parent link="pelvis"/>
+    <child link="l_hip"/>
+    <origin xyz="0.0 0.033 -0.044" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.047" upper="1.047" effort="2.0" velocity="4.0"/>
+  </joint>
+
+  <link name="l_thigh">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_thigh.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_thigh.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.12"/>
+      <inertia ixx="4e-5" iyy="4e-5" izz="1.5e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_hip_pitch" type="revolute">
+    <parent link="l_hip"/>
+    <child link="l_thigh"/>
+    <origin xyz="0.0 0.0 -0.0465" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.094" upper="2.094" effort="2.5" velocity="4.0"/>
+  </joint>
+
+  <link name="l_shin">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_shin.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="accent"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_shin.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.10"/>
+      <inertia ixx="3.5e-5" iyy="3.5e-5" izz="1.2e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_knee" type="revolute">
+    <parent link="l_thigh"/>
+    <child link="l_shin"/>
+    <origin xyz="0.0 0.0 -0.059" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="2.094" effort="2.5" velocity="4.0"/>
+  </joint>
+
+  <link name="l_ankle">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_ankle.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="joint"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_ankle.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="8e-6" iyy="8e-6" izz="8e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_ankle_pitch" type="revolute">
+    <parent link="l_shin"/>
+    <child link="l_ankle"/>
+    <origin xyz="0.0 0.0 -0.058" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.571" upper="1.571" effort="2.0" velocity="4.0"/>
+  </joint>
+
+  <link name="l_foot">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_foot.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/l_foot.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="2e-5" iyy="3e-5" izz="4e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="l_ankle_roll" type="revolute">
+    <parent link="l_ankle"/>
+    <child link="l_foot"/>
+    <origin xyz="0.0 0.0 -0.0465" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.047" upper="1.047" effort="2.0" velocity="4.0"/>
+  </joint>
+
+  <!-- ============================ Right Leg ============================ -->
+  <link name="r_hip">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_hip.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="joint"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_hip.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.05"/>
+      <inertia ixx="1e-5" iyy="1e-5" izz="1e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_hip_roll" type="revolute">
+    <parent link="pelvis"/>
+    <child link="r_hip"/>
+    <origin xyz="0.0 -0.033 -0.044" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.047" upper="1.047" effort="2.0" velocity="4.0"/>
+  </joint>
+
+  <link name="r_thigh">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_thigh.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_thigh.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.12"/>
+      <inertia ixx="4e-5" iyy="4e-5" izz="1.5e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_hip_pitch" type="revolute">
+    <parent link="r_hip"/>
+    <child link="r_thigh"/>
+    <origin xyz="0.0 0.0 -0.0465" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-2.094" upper="2.094" effort="2.5" velocity="4.0"/>
+  </joint>
+
+  <link name="r_shin">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_shin.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="accent"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_shin.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.10"/>
+      <inertia ixx="3.5e-5" iyy="3.5e-5" izz="1.2e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_knee" type="revolute">
+    <parent link="r_thigh"/>
+    <child link="r_shin"/>
+    <origin xyz="0.0 0.0 -0.059" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="0.0" upper="2.094" effort="2.5" velocity="4.0"/>
+  </joint>
+
+  <link name="r_ankle">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_ankle.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="joint"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_ankle.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.04"/>
+      <inertia ixx="8e-6" iyy="8e-6" izz="8e-6" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_ankle_pitch" type="revolute">
+    <parent link="r_shin"/>
+    <child link="r_ankle"/>
+    <origin xyz="0.0 0.0 -0.058" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+    <limit lower="-1.571" upper="1.571" effort="2.0" velocity="4.0"/>
+  </joint>
+
+  <link name="r_foot">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_foot.stl" scale="1 1 1"/>
+      </geometry>
+      <material name="shell"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://tonypi_description/meshes/r_foot.stl" scale="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.08"/>
+      <inertia ixx="2e-5" iyy="3e-5" izz="4e-5" ixy="0" ixz="0" iyz="0"/>
+    </inertial>
+  </link>
+
+  <joint name="r_ankle_roll" type="revolute">
+    <parent link="r_ankle"/>
+    <child link="r_foot"/>
+    <origin xyz="0.0 0.0 -0.0465" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.047" upper="1.047" effort="2.0" velocity="4.0"/>
+  </joint>
+
+</robot>
