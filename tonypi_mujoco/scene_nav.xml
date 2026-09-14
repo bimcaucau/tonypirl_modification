@@ -1,0 +1,73 @@
+<mujoco model="tonypi_nav_scene">
+  <statistic center="1.0 0 0.25" extent="2.4"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="140" elevation="-20" offwidth="1920" offheight="1080"/>
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.15 0.2"
+             markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="8 8" reflectance="0.2"/>
+    <material name="obstacle" rgba="0.86 0.28 0.22 1"/>
+    <material name="goal" rgba="0.15 0.88 0.35 1"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 2.5" dir="0 0 -1" directional="true"/>
+    <light pos="2.0 -0.5 2.0" dir="0 0 -1" diffuse="0.25 0.25 0.25"/>
+    <geom name="floor" size="4 4 0.05" type="plane" material="groundplane" friction="1.2 0.005 0.0001"/>
+
+    <camera name="tracking" mode="trackcom" pos="1.6 -1.6 0.9" xyaxes="0.707 0.707 0 -0.25 0.25 0.94"/>
+    <camera name="front" pos="1.2 0 0.35" xyaxes="0 1 0 0 0 1"/>
+    <camera name="side" pos="0.4 -1.4 0.35" xyaxes="1 0 0 0 0 1"/>
+    <camera name="arena" pos="1.2 -3.2 2.4" xyaxes="1 0.15 0 -0.12 0.55 0.83"/>
+
+    <!-- Obstacle slots start off the arena; reset() places a subset. -->
+    <body name="obs_0" mocap="true" pos="12 12 0.22">
+      <geom name="obs_0" type="box" size="0.09 0.09 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+    <body name="obs_1" mocap="true" pos="12.4 12 0.22">
+      <geom name="obs_1" type="box" size="0.10 0.08 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+    <body name="obs_2" mocap="true" pos="12.8 12 0.22">
+      <geom name="obs_2" type="box" size="0.08 0.11 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+    <body name="obs_3" mocap="true" pos="13.2 12 0.22">
+      <geom name="obs_3" type="box" size="0.12 0.07 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+    <body name="obs_4" mocap="true" pos="13.6 12 0.22">
+      <geom name="obs_4" type="box" size="0.09 0.09 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+    <body name="obs_5" mocap="true" pos="14.0 12 0.22">
+      <geom name="obs_5" type="box" size="0.07 0.12 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+    <body name="obs_6" mocap="true" pos="14.4 12 0.22">
+      <geom name="obs_6" type="box" size="0.11 0.08 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+    <body name="obs_7" mocap="true" pos="14.8 12 0.22">
+      <geom name="obs_7" type="box" size="0.08 0.08 0.22" material="obstacle" contype="1" conaffinity="1"/>
+    </body>
+
+    <body name="goal" mocap="true" pos="2.0 -0.5 0">
+      <geom name="goal_pole" type="cylinder" size="0.018 0.12" pos="0 0 0.12" material="goal"
+            contype="0" conaffinity="0" group="1"/>
+      <geom name="goal_ball" type="sphere" size="0.055" pos="0 0 0.28" material="goal"
+            contype="0" conaffinity="0" group="1"/>
+    </body>
+  </worldbody>
+
+  <include file="tonypi.xml"/>
+
+  <sensor>
+    <rangefinder name="tof_0" site="tof_0" cutoff="1.2"/>
+    <rangefinder name="tof_1" site="tof_1" cutoff="1.2"/>
+    <rangefinder name="tof_2" site="tof_2" cutoff="1.2"/>
+    <rangefinder name="tof_3" site="tof_3" cutoff="1.2"/>
+    <rangefinder name="tof_4" site="tof_4" cutoff="1.2"/>
+    <rangefinder name="sonar" site="sonar" cutoff="5.0"/>
+  </sensor>
+</mujoco>

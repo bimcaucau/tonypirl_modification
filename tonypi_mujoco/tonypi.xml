@@ -1,0 +1,196 @@
+<mujoco model="tonypi">
+  <compiler angle="radian" meshdir="../meshes/"/>
+
+  <default>
+    <joint limited="true" damping="0.1" armature="0.01"/>
+    <geom condim="3" friction="1.2 0.005 0.0001"/>
+    <position kp="25" kv="1.5" inheritrange="1"/>
+  </default>
+
+  <asset>
+    <mesh name="pelvis" file="pelvis.stl"/>
+    <mesh name="neck" file="neck.stl"/>
+    <mesh name="head" file="head.stl"/>
+    <mesh name="l_shoulder" file="l_shoulder.stl"/>
+    <mesh name="l_upper_arm" file="l_upper_arm.stl"/>
+    <mesh name="l_forearm" file="l_forearm.stl"/>
+    <mesh name="r_shoulder" file="r_shoulder.stl"/>
+    <mesh name="r_upper_arm" file="r_upper_arm.stl"/>
+    <mesh name="r_forearm" file="r_forearm.stl"/>
+    <mesh name="l_hip" file="l_hip.stl"/>
+    <mesh name="l_thigh" file="l_thigh.stl"/>
+    <mesh name="l_shin" file="l_shin.stl"/>
+    <mesh name="l_ankle" file="l_ankle.stl"/>
+    <mesh name="l_foot" file="l_foot.stl"/>
+    <mesh name="r_hip" file="r_hip.stl"/>
+    <mesh name="r_thigh" file="r_thigh.stl"/>
+    <mesh name="r_shin" file="r_shin.stl"/>
+    <mesh name="r_ankle" file="r_ankle.stl"/>
+    <mesh name="r_foot" file="r_foot.stl"/>
+
+    <material name="shell" rgba="0.93 0.93 0.95 1.0"/>
+    <material name="joint" rgba="0.15 0.16 0.18 1.0"/>
+    <material name="accent" rgba="0.20 0.55 0.95 1.0"/>
+  </asset>
+
+  <worldbody>
+    <!-- Root body: pelvis at stand height 0.267 m -->
+    <body name="pelvis" pos="0 0 0.267">
+      <freejoint name="root"/>
+      <inertial pos="0 0 0" mass="0.60" diaginertia="8e-4 8e-4 6e-4"/>
+      <geom type="mesh" mesh="pelvis" material="shell"/>
+      <site name="imu" pos="0 0 0"/>
+      <!-- Nav rangefinders (scene_nav.xml). Walking env ignores these sites. -->
+      <site name="tof_0" pos="0.055 0 0.045" size="0.008" rgba="1 0.2 0.1 0.85" zaxis="1 0 0"/>
+      <site name="tof_1" pos="0.055 0.012 0.045" size="0.007" rgba="1 0.5 0.1 0.85" zaxis="0.940 0.342 0"/>
+      <site name="tof_2" pos="0.055 -0.012 0.045" size="0.007" rgba="1 0.5 0.1 0.85" zaxis="0.940 -0.342 0"/>
+      <site name="tof_3" pos="0.055 0.022 0.045" size="0.006" rgba="1 0.8 0.2 0.85" zaxis="0.766 0.643 0"/>
+      <site name="tof_4" pos="0.055 -0.022 0.045" size="0.006" rgba="1 0.8 0.2 0.85" zaxis="0.766 -0.643 0"/>
+      <site name="sonar" pos="0.050 0 0.020" size="0.010" rgba="0.2 0.6 1 0.85" zaxis="1 0 0"/>
+
+      <!-- ==================== Head & Neck ==================== -->
+      <body name="neck" pos="0 0 0.050">
+        <inertial pos="0 0 0" mass="0.03" diaginertia="5e-6 5e-6 5e-6"/>
+        <joint name="neck_yaw" axis="0 0 1" range="-1.571 1.571"/>
+        <geom type="mesh" mesh="neck" material="joint"/>
+        <body name="head" pos="0 0.006 0.020">
+          <inertial pos="0 0 0" mass="0.15" diaginertia="1.5e-4 1.5e-4 1.5e-4"/>
+          <joint name="head_pitch" axis="0 1 0" range="-1.0 1.0"/>
+          <geom type="mesh" mesh="head" material="shell"/>
+          <camera name="head_camera" pos="0.08 0 0.04" fovy="70" xyaxes="0 -1 0 0 0 1"/>
+        </body>
+      </body>
+
+      <!-- ==================== Left Arm ==================== -->
+      <body name="l_shoulder" pos="0 0.058 0.0287">
+        <inertial pos="0 0 0" mass="0.04" diaginertia="8e-6 8e-6 8e-6"/>
+        <joint name="l_shoulder_pitch" axis="0 1 0" range="-2.094 2.094"/>
+        <geom type="mesh" mesh="l_shoulder" material="joint"/>
+        <body name="l_upper_arm" pos="0 0.0244 0">
+          <inertial pos="0 0 0" mass="0.08" diaginertia="3e-5 3e-5 1e-5"/>
+          <joint name="l_upperarm_roll" axis="1 0 0" range="-2.094 2.094"/>
+          <geom type="mesh" mesh="l_upper_arm" material="shell"/>
+          <body name="l_forearm" pos="0 0 -0.0489">
+            <inertial pos="0 0 0" mass="0.06" diaginertia="2e-5 2e-5 8e-6"/>
+            <joint name="l_elbow" axis="1 0 0" range="-2.094 2.094"/>
+            <geom type="mesh" mesh="l_forearm" material="accent"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ==================== Right Arm ==================== -->
+      <body name="r_shoulder" pos="0 -0.058 0.0287">
+        <inertial pos="0 0 0" mass="0.04" diaginertia="8e-6 8e-6 8e-6"/>
+        <joint name="r_shoulder_pitch" axis="0 1 0" range="-2.094 2.094"/>
+        <geom type="mesh" mesh="r_shoulder" material="joint"/>
+        <body name="r_upper_arm" pos="0 -0.0244 0">
+          <inertial pos="0 0 0" mass="0.08" diaginertia="3e-5 3e-5 1e-5"/>
+          <joint name="r_upperarm_roll" axis="-1 0 0" range="-2.094 2.094"/>
+          <geom type="mesh" mesh="r_upper_arm" material="shell"/>
+          <body name="r_forearm" pos="0 0 -0.0489">
+            <inertial pos="0 0 0" mass="0.06" diaginertia="2e-5 2e-5 8e-6"/>
+            <joint name="r_elbow" axis="-1 0 0" range="-2.094 2.094"/>
+            <geom type="mesh" mesh="r_forearm" material="accent"/>
+          </body>
+        </body>
+      </body>
+
+      <!-- ==================== Left Leg ==================== -->
+      <body name="l_hip" pos="0 0.033 -0.044">
+        <inertial pos="0 0 0" mass="0.05" diaginertia="1e-5 1e-5 1e-5"/>
+        <joint name="l_hip_roll" axis="1 0 0" range="-1.047 1.047"/>
+        <geom type="mesh" mesh="l_hip" material="joint"/>
+        <body name="l_thigh" pos="0 0 -0.0465">
+          <inertial pos="0 0 0" mass="0.12" diaginertia="4e-5 4e-5 1.5e-5"/>
+          <joint name="l_hip_pitch" axis="0 1 0" range="-2.094 2.094"/>
+          <geom type="mesh" mesh="l_thigh" material="shell"/>
+          <body name="l_shin" pos="0 0 -0.055">
+            <inertial pos="0 0 0" mass="0.10" diaginertia="3.5e-5 3.5e-5 1.2e-5"/>
+            <joint name="l_knee" axis="0 1 0" range="0 2.094"/>
+            <geom type="mesh" mesh="l_shin" material="accent"/>
+            <body name="l_ankle" pos="0 0 -0.058">
+              <inertial pos="0 0 0" mass="0.04" diaginertia="8e-6 8e-6 8e-6"/>
+              <joint name="l_ankle_pitch" axis="0 1 0" range="-1.571 1.571"/>
+              <geom type="mesh" mesh="l_ankle" material="joint"/>
+              <body name="l_foot" pos="0 0 -0.045">
+                <inertial pos="0 0 0" mass="0.08" diaginertia="4e-5 3e-5 2e-5"/>
+                <joint name="l_ankle_roll" axis="1 0 0" range="-1.047 1.047"/>
+                <geom type="mesh" mesh="l_foot" material="shell"/>
+                <site name="l_foot_site" pos="0 0 -0.01"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- ==================== Right Leg ==================== -->
+      <body name="r_hip" pos="0 -0.033 -0.044">
+        <inertial pos="0 0 0" mass="0.05" diaginertia="1e-5 1e-5 1e-5"/>
+        <joint name="r_hip_roll" axis="1 0 0" range="-1.047 1.047"/>
+        <geom type="mesh" mesh="r_hip" material="joint"/>
+        <body name="r_thigh" pos="0 0 -0.0465">
+          <inertial pos="0 0 0" mass="0.12" diaginertia="4e-5 4e-5 1.5e-5"/>
+          <joint name="r_hip_pitch" axis="0 1 0" range="-2.094 2.094"/>
+          <geom type="mesh" mesh="r_thigh" material="shell"/>
+          <body name="r_shin" pos="0 0 -0.055">
+            <inertial pos="0 0 0" mass="0.10" diaginertia="3.5e-5 3.5e-5 1.2e-5"/>
+            <joint name="r_knee" axis="0 1 0" range="0 2.094"/>
+            <geom type="mesh" mesh="r_shin" material="accent"/>
+            <body name="r_ankle" pos="0 0 -0.058">
+              <inertial pos="0 0 0" mass="0.04" diaginertia="8e-6 8e-6 8e-6"/>
+              <joint name="r_ankle_pitch" axis="0 1 0" range="-1.571 1.571"/>
+              <geom type="mesh" mesh="r_ankle" material="joint"/>
+              <body name="r_foot" pos="0 0 -0.045">
+                <inertial pos="0 0 0" mass="0.08" diaginertia="4e-5 3e-5 2e-5"/>
+                <joint name="r_ankle_roll" axis="1 0 0" range="-1.047 1.047"/>
+                <geom type="mesh" mesh="r_foot" material="shell"/>
+                <site name="r_foot_site" pos="0 0 -0.01"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+    </body>
+  </worldbody>
+
+  <!-- ==================== Actuators (PD Position Servos) ==================== -->
+  <actuator>
+    <position name="neck_yaw_act" joint="neck_yaw" kp="10" kv="0.5"/>
+    <position name="head_pitch_act" joint="head_pitch" kp="10" kv="0.5"/>
+
+    <position name="l_shoulder_pitch_act" joint="l_shoulder_pitch" kp="20" kv="1.0"/>
+    <position name="l_upperarm_roll_act" joint="l_upperarm_roll" kp="20" kv="1.0"/>
+    <position name="l_elbow_act" joint="l_elbow" kp="15" kv="0.8"/>
+
+    <position name="r_shoulder_pitch_act" joint="r_shoulder_pitch" kp="20" kv="1.0"/>
+    <position name="r_upperarm_roll_act" joint="r_upperarm_roll" kp="20" kv="1.0"/>
+    <position name="r_elbow_act" joint="r_elbow" kp="15" kv="0.8"/>
+
+    <position name="l_hip_roll_act" joint="l_hip_roll" kp="30" kv="2.0"/>
+    <position name="l_hip_pitch_act" joint="l_hip_pitch" kp="35" kv="2.0"/>
+    <position name="l_knee_act" joint="l_knee" kp="35" kv="2.0"/>
+    <position name="l_ankle_pitch_act" joint="l_ankle_pitch" kp="25" kv="1.5"/>
+    <position name="l_ankle_roll_act" joint="l_ankle_roll" kp="25" kv="1.5"/>
+
+    <position name="r_hip_roll_act" joint="r_hip_roll" kp="30" kv="2.0"/>
+    <position name="r_hip_pitch_act" joint="r_hip_pitch" kp="35" kv="2.0"/>
+    <position name="r_knee_act" joint="r_knee" kp="35" kv="2.0"/>
+    <position name="r_ankle_pitch_act" joint="r_ankle_pitch" kp="25" kv="1.5"/>
+    <position name="r_ankle_roll_act" joint="r_ankle_roll" kp="25" kv="1.5"/>
+  </actuator>
+
+  <!-- ==================== Sensors for RL ==================== -->
+  <sensor>
+    <accelerometer name="imu_accel" site="imu"/>
+    <gyro name="imu_gyro" site="imu"/>
+    <framequat name="imu_quat" objtype="site" objname="imu"/>
+    <touch name="l_foot_touch" site="l_foot_site"/>
+    <touch name="r_foot_touch" site="r_foot_site"/>
+  </sensor>
+
+  <!-- ==================== Keyframe: Stand Pose ==================== -->
+  <keyframe>
+    <key name="stand" qpos="0 0 0.267 1 0 0 0  0 0  0 0 0  0 0 0  0 0 0 0 0  0 0 0 0 0"/>
+  </keyframe>
+</mujoco>
