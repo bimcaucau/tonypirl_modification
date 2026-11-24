@@ -1,0 +1,61 @@
+# SUPERSEDED by v1_1_nav_expert.yaml — obs space changed, do not use
+# =============================================================================
+# TonyPi high-level navigation (v1) + privileged expert guidance
+# Same PPO budget as v1_nav.yaml. Do not use this for the in-flight cluster run.
+# =============================================================================
+
+experiment:
+  name: "tonypi_v1_nav_expert"
+  description: "Nav PPO with A* expert (BC warmup + mix + DAgger CE)"
+  device: "auto"
+  seed: 42
+
+curriculum:
+  stage: "v1_nav_expert"
+
+environment:
+  env_class: nav
+  xml_path: "tonypi_mujoco/scene_nav.xml"
+  layout: random
+  goal_mode: random
+  n_obstacles: 4
+  max_episode_steps: 240
+  arrive_radius: 0.20
+  progress_weight: 5.0
+  arrive_bonus: 20.0
+  time_penalty: 0.05
+  collision_penalty: 2.0
+  use_geodesic_reward: true
+  expert_robot_radius: 0.18
+  expert_grid_res: 0.05
+  expert_heading_weight: 0.12
+
+expert:
+  enabled: true
+  bc_warmup_steps: 50000
+  bc_epochs: 8
+  bc_batch_size: 1024
+  bc_coef: 0.15
+  bc_anneal_steps: 2000000
+  mix_prob: 0.3
+  mix_anneal_steps: 1000000
+  heading_weight: 0.12
+
+ppo:
+  policy: MultiInputPolicy
+  timesteps: 20000000
+  n_envs: 8
+  n_steps: 2048
+  batch_size: 1024
+  n_epochs: 10
+  learning_rate: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.002
+
+logging:
+  save_freq: 100000
+  eval_freq: 100000
+  log_dir: "tonypi_rl/logs"
+  model_dir: "tonypi_rl/models"

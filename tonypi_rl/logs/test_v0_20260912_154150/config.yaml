@@ -1,0 +1,64 @@
+# =============================================================================
+# Hiwonder TonyPi RL Configuration
+# Curriculum Stage 0: Straight-Line Walking with Alternating Foot-Switching (v0)
+# =============================================================================
+
+experiment:
+  name: "tonypi_v0"
+  description: "Stage 0: Learn stable bipedal walking in a straight line with alternating foot contact"
+  device: "auto"        # Options: "auto", "cuda", "cpu"
+  seed: 42
+
+curriculum:
+  stage: "v0_straight_walk"
+  target_forward_velocity: 0.20  # Desired walking speed in m/s
+
+environment:
+  xml_path: "tonypi_mujoco/scene.xml"
+  frame_skip: 10
+  action_mode: "pi_scaled_offset"
+  action_scale: 0.25
+  include_lin_vel: false        # False: matches real hardware (63 dims obs, no linear velocity)
+  include_foot_contacts: false  # False: touch sensors NOT in policy obs (used only in reward)
+  target_height: 0.262          # Standing pelvis height (m)
+  reset_noise_scale: 0.02
+
+rewards:
+  # Forward Walking Progress
+  forward_vel_weight: 2.5       # Reward for moving forward along +X
+  alive_weight: 1.0             # Constant bonus per step robot remains upright
+
+  # Straight-Line Constraints
+  straight_line_pos_weight: 2.0 # Penalty for lateral drift |y_pelvis| away from center line
+  lateral_vel_weight: 1.0       # Penalty for sideways velocity v_y^2
+  heading_yaw_weight: 1.2       # Penalty for heading yaw angle deviation from forward +X
+
+  # Foot Switching & Gait (Evaluated in Virtual Sim Only)
+  foot_switch_reward: 2.0       # Bonus every time robot alternates stance foot (left <-> right)
+  single_support_reward: 0.6    # Reward for having exactly one foot on ground
+  foot_clearance_reward: 0.5    # Reward for lifting swing foot during stance (1.5-3.5 cm)
+  feet_air_penalty: 1.5         # Penalty if both feet leave ground simultaneously (jumping/falling)
+
+  # Posture & Smoothness
+  height_weight: 2.0            # Penalty for deviation from standing height 0.262m
+  upright_weight: 2.0           # Penalty for torso tilting
+  ctrl_cost_weight: 0.005       # Penalty on action magnitude
+  smooth_cost_weight: 0.02      # Penalty on action rate of change (a_t - a_{t-1})
+
+ppo:
+  timesteps: 500000
+  n_envs: 4
+  n_steps: 2048
+  batch_size: 64
+  n_epochs: 10
+  learning_rate: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.005
+
+logging:
+  save_freq: 25000              # Save checkpoint every 25,000 steps
+  eval_freq: 10000              # Evaluate every 10,000 steps
+  log_dir: "tonypi_rl/logs"
+  model_dir: "tonypi_rl/models"

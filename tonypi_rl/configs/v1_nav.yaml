@@ -1,0 +1,46 @@
+# SUPERSEDED by v1_1_nav.yaml — obs space changed, do not use
+# =============================================================================
+# TonyPi high-level navigation (v1)
+# Discrete action groups + 32x32 occupancy + 1 ToF + 1 sonar
+# =============================================================================
+
+experiment:
+  name: "tonypi_v1_nav"
+  description: "Go to a body-frame XY goal, avoid boxes, output action-group ids"
+  device: "auto"
+  seed: 42
+
+curriculum:
+  stage: "v1_nav"
+
+environment:
+  env_class: nav
+  xml_path: "tonypi_mujoco/scene_nav.xml"
+  layout: random
+  goal_mode: random
+  n_obstacles: 4
+  max_episode_steps: 240
+  arrive_radius: 0.20
+  progress_weight: 5.0
+  arrive_bonus: 20.0
+  time_penalty: 0.05
+  collision_penalty: 2.0
+
+ppo:
+  policy: MultiInputPolicy
+  timesteps: 20000000
+  n_envs: 8
+  n_steps: 2048
+  batch_size: 1024
+  n_epochs: 10
+  learning_rate: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.002
+
+logging:
+  save_freq: 100000
+  eval_freq: 100000
+  log_dir: "tonypi_rl/logs"
+  model_dir: "tonypi_rl/models"

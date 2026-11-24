@@ -64,10 +64,6 @@
 
   <sensor>
     <rangefinder name="tof_0" site="tof_0" cutoff="1.2"/>
-    <rangefinder name="tof_1" site="tof_1" cutoff="1.2"/>
-    <rangefinder name="tof_2" site="tof_2" cutoff="1.2"/>
-    <rangefinder name="tof_3" site="tof_3" cutoff="1.2"/>
-    <rangefinder name="tof_4" site="tof_4" cutoff="1.2"/>
     <rangefinder name="sonar" site="sonar" cutoff="5.0"/>
   </sensor>
 </mujoco>

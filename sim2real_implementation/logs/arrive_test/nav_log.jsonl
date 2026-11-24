@@ -1,0 +1,1 @@
+{"t": 0.0, "step": 0, "action": "stand", "action_id": 0, "raw_action": "go_forward", "safety_reason": "arrived", "vec": [0.05, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "tof_m": 1.2, "sonar_m": 5.0, "dist": 0.15, "heading": 0.0, "gx": 0.15, "gy": 0.0, "occ_mean": 0.0, "latency_ms": 5.8}

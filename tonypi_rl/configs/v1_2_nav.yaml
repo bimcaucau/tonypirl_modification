@@ -1,0 +1,59 @@
+# =============================================================================
+# TonyPi high-level navigation (v1.2) - Stock PPO
+# =============================================================================
+
+experiment:
+  name: "tonypi_v1_2_nav"
+  description: "Nav v1.2: mixed detour layouts, ram penalty, stock PPO"
+  device: "auto"
+  seed: 42
+
+curriculum:
+  stage: "v1_2_nav"
+
+environment:
+  env_class: nav
+  xml_path: "tonypi_mujoco/scene_nav.xml"
+  layout: mixed
+  goal_mode: random
+  random_spawn: true
+  random_robot_yaw: true
+  n_obstacles: 4
+  max_episode_steps: 160
+  arrive_radius: 0.20
+  progress_weight: 5.0
+  arrive_bonus: 100.0
+  time_penalty: 0.25
+  collision_penalty: 3.0
+  reverse_penalty: 0.50
+  oscillation_penalty: 0.30
+  heading_align_weight: 0.15
+  ram_penalty: 1.0
+  collision_streak_limit: 8
+  use_geodesic_reward: true
+  expert_robot_radius: 0.18
+  expert_grid_res: 0.05
+  expert_heading_weight: 0.12
+
+expert:
+  enabled: false
+
+ppo:
+  policy: MultiInputPolicy
+  timesteps: 15000000
+  n_envs: 8
+  n_steps: 2048
+  batch_size: 1024
+  n_epochs: 4
+  learning_rate: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_range: 0.2
+  ent_coef: 0.005
+  target_kl: 0.03
+
+logging:
+  save_freq: 100000
+  eval_freq: 100000
+  log_dir: "tonypi_rl/logs"
+  model_dir: "tonypi_rl/models"

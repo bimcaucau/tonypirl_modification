@@ -1,0 +1,13 @@
+# Python dependencies for deploying TonyPi navigation policy to Raspberry Pi
+# NOTE: Do NOT install mujoco on the Pi.
+
+numpy>=1.24.0
+gymnasium==1.3.0
+stable-baselines3>=2.3.0,<=2.9.0
+torch>=2.0.0
+PyYAML>=6.0
+opencv-python
+
+# Occupancy YOLO (needed for --occupancy yolo / view_segmentation --mode yolo).
+# Need a build that ships YOLO26 semantic (yolo26n-sem-ade20k.pt). Instance fallback: yolo26n-seg.pt.
+ultralytics>=8.4.52

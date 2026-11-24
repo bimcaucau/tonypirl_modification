@@ -1,0 +1,9 @@
+# Body-frame primitives (dx_m, dy_m, dyaw_rad) matching sim table.
+# calibrate_primitives.py overwrites this with tape-measured values.
+stand: [0.00, 0.00, 0.00]
+go_forward: [0.08, 0.00, 0.00]
+back_fast: [-0.06, 0.00, 0.00]
+left_move_fast: [0.00, 0.05, 0.00]
+right_move_fast: [0.00, -0.05, 0.00]
+turn_left: [0.00, 0.00, 0.35]
+turn_right: [0.00, 0.00, -0.35]

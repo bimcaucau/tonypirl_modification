@@ -1,0 +1,9 @@
+# real_accel_unit (3,) -> sim_gravity (3,): g_sim = R @ a_real_unit
+# Default mapping for TonyPi X-up STM32 mount: a_stand=[-1,0,0] -> g_sim=[0,0,-1]
+# calibrate_imu.py will measure real samples, flip calibrated to true, and overwrite this.
+calibrated: false
+R:
+  - [0.0, 0.0, 1.0]
+  - [0.0, 1.0, 0.0]
+  - [1.0, 0.0, 0.0]
+gyro_mode: zeros          # locked v1

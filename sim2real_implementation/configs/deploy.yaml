@@ -1,0 +1,33 @@
+# Model zip path: resolve_model_path will check local dir, models/, models_ckpt/, and /home/pi/nav_deploy/
+model: tonypi_final_model.zip
+backend: tonypi
+goal: [2.0, -0.5]
+goal_mode: deadreckon
+occupancy: color
+arrive: 0.20
+max_steps: 20
+max_seconds: 60
+# Semantic ADE20K (table legs). Instance fallback: yolo26n-seg.pt
+yolo_weights: yolo26n-sem-ade20k.pt
+yolo_imgsz: 320
+yolo_conf: 0.25
+yolo_keep_all: false
+# Default HSV range for red obstacles (wraps across hue boundary if hsv_lo[0] > hsv_hi[0], e.g. [170, 80, 80] to [12, 255, 255])
+hsv_lo: [0, 80, 80]
+hsv_hi: [12, 255, 255]
+recover_fall: false
+fall_deg: 45.0
+tof_guard: null
+allow_missing_tof: false
+dry_run: false
+# Pitch the head down before every translation and veto a step whose footprint
+# has wires / small blocks. 1500 is level; 1100 is ~36° down. 900 framed the
+# shins and the robot backed up on every step. See GROUND_LOOK.md.
+ground_look: true
+look_sweep: true
+look_pulse: 1100
+# Unused for the angle. Side looks aim at the left/right step (~68° down, ±58° yaw).
+look_yaw_amp: 250
+look_yaw_sign: 1
+# -1: pulse below 1500 looks down (hand_nod.py). Flip only if servo 1 is reversed.
+look_pitch_sign: -1
